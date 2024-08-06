@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-const API_URL = 'https://api.openai.com/v1/chat/completions';
-const API_KEY = 'your-openai-api-key-here'; // Replace with your actual API key
+const API_URL = 'https://api.chatgpt4o.com/v1/chat/completions';
+const API_KEY = 'your-chatgpt4o-api-key-here'; // Replace with your actual API key
 
 export const sendMessage = async (messages) => {
   try {
     const response = await axios.post(API_URL, {
-      model: "gpt-3.5-turbo",
+      model: "gpt-4",
       messages: messages,
     }, {
       headers: {
@@ -14,9 +14,13 @@ export const sendMessage = async (messages) => {
         'Content-Type': 'application/json',
       },
     });
-    return response.data.choices[0].message;
+    if (response.data && response.data.choices && response.data.choices.length > 0) {
+      return response.data.choices[0].message;
+    } else {
+      throw new Error('Invalid response format');
+    }
   } catch (error) {
-    console.error('Error calling OpenAI API:', error);
+    console.error('Error calling ChatGPT4o API:', error);
     throw error;
   }
 };

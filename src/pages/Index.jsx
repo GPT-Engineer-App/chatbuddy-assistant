@@ -31,9 +31,14 @@ const Index = () => {
 
     try {
       const response = await sendMessage([...messages, newMessage]);
-      setMessages(prevMessages => [...prevMessages, response]);
+      if (response && response.content) {
+        setMessages(prevMessages => [...prevMessages, response]);
+      } else {
+        throw new Error('Invalid response from API');
+      }
     } catch (error) {
-      console.error('Error calling OpenAI API:', error);
+      console.error('Error calling ChatGPT4o API:', error);
+      setMessages(prevMessages => [...prevMessages, { role: 'assistant', content: 'Sorry, there was an error processing your request.' }]);
     } finally {
       setIsLoading(false);
     }
